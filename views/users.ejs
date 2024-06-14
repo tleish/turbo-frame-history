@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.4/+esm"></script>
+  <style>
+    turbo-frame {
+      display: block;
+      outline: 2px solid blue;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    .opacity-50 {
+      opacity: 0.5;
+    }
+
+    .disabled {
+      color: currentColor;
+      cursor: not-allowed;
+      opacity: 0.5;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Users</h1>
+  <h4>Initial Page <%= currentPage %></h4>
+  <turbo-frame id="page">
+    <div class="users">
+      <% users.forEach(user => { %>
+        <p class="user" id="user_<%= user.id %>">
+          Name: <%= user.name %> <br>
+          Email: <%= user.email %>
+        </p>
+      <% }) %>
+    </div>
+
+    <p>
+      <% if (hasPrevPage) { %>
+        <a href="/users?page=<%= currentPage - 1 %>" data-turbo-frame="page" data-turbo-action="advance">&lt; Previous Page</a>
+      <% } else { %>
+         <span style="color: currentColor; cursor: not-allowed; opacity: 0.5; text-decoration: none;">&lt; Previous Page</span>
+      <% } %>
+      <% if (hasNextPage) { %>
+        <a href="/users?page=<%= currentPage + 1 %>" data-turbo-frame="page" data-turbo-action="advance">Next Page &gt;</a>
+      <% } else { %>
+         <span style="color: currentColor; cursor: not-allowed; opacity: 0.5; text-decoration: none;">Next Page &gt;</span>
+      <% } %>
+      <span class="opacity-50">(data-turbo-frame="page" data-turbo-action="advance")</span>
+    </p>
+    <p>
+      <% if (hasPrevPage) { %>
+        <a href="javascript:Turbo.visit('/users?page=<%= currentPage - 1 %>', {frame: 'page', action: 'advance'});" data-turbo-frame="page" data-turbo-action="advance">&lt; Previous Page</a>
+      <% } else { %>
+         <span class="disabled">&lt; Previous Page</span>
+      <% } %>
+      <% if (hasNextPage) { %>
+        <a href="javascript:Turbo.visit('/users?page=<%= currentPage + 1 %>', {frame: 'page', action: 'advance'});" data-turbo-frame="page" data-turbo-action="advance">Next Page &gt;</a>
+      <% } else { %>
+         <span class="disabled">Next Page &gt;</span>
+      <% } %>
+      <span class="opacity-50">(Turbo.visit(url, {frame: 'page', action: 'advance'}))</span>
+    </p>
+
+  </turbo-frame>
+
+  <form id="pageForm" method="GET" data-turbo-frame="page" data-turbo-action="advance">
+    <label for="pageNumber">Go to page:</label>
+    <input type="number" id="pageNumber" name="page" min="1">
+    <button type="submit">Go</button>
+  </form>
+</body>
+</html>
